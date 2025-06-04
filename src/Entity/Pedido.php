@@ -3,8 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\PedidoRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PedidoRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -16,19 +17,23 @@ class Pedido
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private ?string $Direccion = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     private ?float $Total = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
     private ?int $Cantidad = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTime $Creado = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $Creado = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTime $Modificado = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $Modificado = null;
 
     public function getId(): ?int
     {
@@ -71,27 +76,29 @@ class Pedido
         return $this;
     }
 
-    public function getCreado(): ?\DateTime
+    public function getCreado(): ?\DateTimeImmutable
     {
         return $this->Creado;
     }
 
     #[ORM\PrePersist]
-    public function setCreado(?\DateTime $Creado): self
+    public function setCreado(): self
     {
-        $this->Creado = $Creado;
+        $this->Creado = new DateTimeImmutable('now');
 
         return $this;
     }
 
-    public function getModificado(): ?\DateTime
+    public function getModificado(): ?\DateTimeImmutable
     {
         return $this->Modificado;
     }
 
-    public function setModificado(?\DateTime $Modificado): static
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function setModificado(): self
     {
-        $this->Modificado = $Modificado;
+        $this->Modificado = new DateTimeImmutable('now');
 
         return $this;
     }
