@@ -25,4 +25,12 @@ class PedidoRepository extends ServiceEntityRepository
             $this->em->flush();
         }
     }
+
+    public function remove(Pedido $pedido, bool $flush = false): void
+    {
+        $this->em->remove($pedido);
+        if ($flush) {
+            $this->em->flush();
+        }
+    }
 }
